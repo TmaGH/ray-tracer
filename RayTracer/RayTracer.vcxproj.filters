@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Canvas">
+      <UniqueIdentifier>{614442AB-4DE6-6C81-36A1-80D522E2F3D1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Color">
+      <UniqueIdentifier>{2422FA0C-9036-22BE-59B8-C51DC58B1EEF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Log">
+      <UniqueIdentifier>{E704880B-530E-887C-DC89-9E7C4892937C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Matrix">
+      <UniqueIdentifier>{FA1499C2-E6B6-C398-CF71-D7ECBBB24AE9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Test">
+      <UniqueIdentifier>{45DC8C7C-3113-8E0D-DAFF-7310C6150A0F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tuple">
+      <UniqueIdentifier>{8F1D310E-FB31-59BF-C4B3-FC1E308755F0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Canvas\Canvas.h">
+      <Filter>Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Color\Color.h">
+      <Filter>Color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Log\Log.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Matrix\Matrix.h">
+      <Filter>Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\MatrixEqualMatcher.h">
+      <Filter>Test</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\TupleEqualMatcher.h">
+      <Filter>Test</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tuple\Tuple.h">
+      <Filter>Tuple</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Canvas\Canvas.cpp">
+      <Filter>Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Canvas\Canvas.test.cpp">
+      <Filter>Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Color\Color.cpp">
+      <Filter>Color</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Color\Color.test.cpp">
+      <Filter>Color</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Log\Log.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Matrix\Matrix.cpp">
+      <Filter>Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Matrix\Matrix.test.cpp">
+      <Filter>Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tuple\Tuple.cpp">
+      <Filter>Tuple</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tuple\Tuple.test.cpp">
+      <Filter>Tuple</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
