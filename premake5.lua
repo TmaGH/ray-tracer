@@ -8,6 +8,7 @@ project "RayTracer"
   language "C++"
   cppdialect "C++20"
   architecture "x86_64"
+  openmp "On"
 
   targetdir "bin/%{cfg.buildcfg}-%{cfg.platform}/%{prj.name}"
   objdir "bin-obj/%{cfg.buildcfg}-%{cfg.platform}/%{prj.name}"
@@ -35,3 +36,4 @@ project "RayTracer"
     defines { "TEST" }
     optimize "On"
     includedirs { "%{cfg.location}/vendor/catch2" }
+
