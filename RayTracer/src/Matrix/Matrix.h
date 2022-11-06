@@ -62,6 +62,22 @@ public:
 		return transposeMatrix;
 	}
 
+	static Matrix invert(Matrix a) {
+		if (!a.isInvertible()) return a;
+
+		Matrix b{ a.width, a.height };
+
+		for (int i = 0; i < a.height; i++) {
+			for (int j = 0; j < a.width; j++) {
+				float c = a.cofactor(i, j);
+
+				b.set(i, j, c / a.determinant());
+			}
+		}
+
+		return 	Matrix::transpose(b);
+	}
+
 	float at(int i, int j) const {
 		return m_data[j + i * width];
 	}
@@ -78,8 +94,36 @@ public:
 		return m_data;
 	}
 
+	float minor(int row, int col) const {
+		return Matrix::submatrix(*this, row, col).determinant();
+	}
+
+	float cofactor(int row, int col) const {
+		float cof = minor(row, col);
+		if ((row + col) % 2 != 0) cof = -1 * cof;
+		return cof;
+	}
+
 	float determinant2x2() const {
 		return at(0,0) * at(1,1) - at(0,1) * at(1,0);
+	}
+
+	float determinant() const {
+		if (height == 2 && width == 2) return determinant2x2();
+
+		float determinant = 0;
+		int i = 0;
+
+		for (int j = 0; j < width; j++) {
+			determinant += at(i, j) * cofactor(i, j);
+		}
+		
+		return determinant;
+	}
+
+	bool isInvertible() const {
+		if (determinant() != 0) return true;
+		return false;
 	}
 
 	Matrix operator *(const Matrix& b) const {
@@ -92,7 +136,7 @@ public:
 
 		for (int ai = 0; ai < height; ai++) {
 			for (int bi = 0; bi < bT.height; bi++) {
-				double sum = 0.0;
+				float sum = 0.0;
 				for (int j = 0; j < n; j++) {
 					sum += at(ai, j) * bT.at(bi, j);
 				}

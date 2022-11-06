@@ -2,6 +2,7 @@
 #include <fstream>
 #include "Tuple/Tuple.h"
 #include "Canvas/Canvas.h"
+#include "Matrix/Matrix.h";
 
 struct Projectile {
 	Tuple position;
@@ -17,6 +18,29 @@ void tick(const Environment& env, Projectile& proj) {
 	proj.position = proj.position + proj.velocity;
 	proj.velocity = proj.velocity + env.gravity + env.wind;
 }
+
+/*
+int main() {
+	auto identity = Matrix::getFourByFourIdentity();
+
+	auto inverseOfIdentity = Matrix::invert(identity);
+
+	auto a = Matrix{ 4,4 };
+
+	float matrixContent[] = {
+			3.0f, -9.0f, 7.0f, 3.0f,
+			3.0f, -8.0f, 2.0f, -9.0f,
+			-4.0f, 4.0f, 4.0f, 1.0f,
+			-6.0f, 5.0f, -1.0f, 1.0f,
+	};
+	a.setData(matrixContent);
+
+	std::cout << Matrix::invert(Matrix::transpose(a)) << std::endl;
+
+	std::cout << Matrix::transpose(Matrix::invert(a)) << std::endl;
+
+}
+*/
 
 /*
 int main() {
