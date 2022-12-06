@@ -1,6 +1,10 @@
+#define _USE_MATH_DEFINES
+
 #include "catch.hpp"
 #include "Matrix/Matrix.h"
 #include "Test/MatrixEqualMatcher.h"
+#include "Test/TupleEqualMatcher.h"
+#include <math.h>
 
 SCENARIO("Constructing and inspecting a 4x4 matrix") {
 	GIVEN("a specific 4x4 matrix M") {
@@ -531,3 +535,228 @@ SCENARIO("Multiplying a product by its inverse") {
 	}
 }
 
+SCENARIO("Multiplying by a translation matrix") {
+	GIVEN("transform <- translation(5, -3, 2) AND p <- point(-3, 4, 5)") {
+		THEN("transform * p = point(2, 1, 7)") {
+			Matrix transform = Matrix::translation(5, -3, 2);
+			Tuple p = Tuple::point(-3, 4, 5);
+
+			CHECK_THAT(transform * p, isEqualTo(Tuple::point(2, 1, 7)));
+		}
+	}
+}
+
+SCENARIO("Multiplying by the inverse of a translation matrix") {
+	GIVEN("transform <- translation(5, -3, 2)") {
+		Matrix transform = Matrix::translation(5, -3, 2);
+
+		GIVEN("inv <- inverse(transform) AND p <- point(-3, 4, 5)") {
+			Matrix inv = Matrix::invert(transform);
+			Tuple p = Tuple::point(-3, 4, 5);
+
+			THEN("inv * p = point(-8, 7, 3)") {
+				CHECK_THAT(inv * p, isEqualTo(Tuple::point(-8, 7, 3)));
+			}
+		}
+	}
+}
+
+SCENARIO("Translation does not affect vectors") {
+	GIVEN("transform <- translation(5, -3, 2) AND v <- vector(-3, 4, 5)") {
+		Matrix transform = Matrix::translation(5, -3, 2);
+		Tuple v = Tuple::vector(-3, 4, 5);
+
+		THEN("transform * v = v") {
+			CHECK_THAT(transform * v, isEqualTo(v));
+		}
+	}
+}
+
+SCENARIO("A scaling matrix applied to a point") {
+	GIVEN("transform <- scaling(2, 3, 4) AND p <- point(-4, 6, 8)") {
+		Matrix transform = Matrix::scaling(2, 3, 4);
+		Tuple p = Tuple::point(-4, 6, 8);
+
+		THEN("transform * p = point(-8, 18, 32)") {
+			CHECK_THAT(transform * p, isEqualTo(Tuple::point(-8, 18, 32)));
+		}
+	}
+}
+
+SCENARIO("Multiplying by the inverse of a scaling matrix") {
+	GIVEN("transform <- scaling(2, 3, 4)") {
+		Matrix transform = Matrix::scaling(2, 3, 4);
+
+		GIVEN("inv <- inverse(transform) AND p <- point(-4, 6, 8)") {
+			Matrix inv = Matrix::invert(transform);
+			Tuple p = Tuple::point(-4, 6, 8);
+
+			THEN("inv * p = point(-2, 2, 2)") {
+				CHECK_THAT(inv * p, isEqualTo(Tuple::point(-2, 2, 2)));
+			}
+		}
+	}
+}
+
+
+SCENARIO("Reflection is scaling by a negative value") {
+	GIVEN("transform <- scaling(-1, 1, 1) AND p <- point(2, 3, 4)") {
+		Matrix transform = Matrix::scaling(-1, 1, 1);
+		Tuple p = Tuple::point(2, 3, 4);
+
+		THEN("transform * p = point(-2, 3, 4)") {
+			CHECK_THAT(transform * p, isEqualTo(Tuple::point(-2, 3, 4)));
+		}
+	}
+}
+
+SCENARIO("Rotating a point around the x axis") {
+	GIVEN("p <- point(0, 1, 0) AND half_quarter <- rotation_x(pi / 4) AND full_quarter <- rotation_x(pi / 2)") {
+		Tuple p = Tuple::point(0, 1, 0);
+		Matrix half_quarter = Matrix::rotationX(M_PI / 4);
+		Matrix full_quarter = Matrix::rotationX(M_PI / 2);
+
+		THEN("half_quarter * p = point(0, sqrt(2)/2, sqrt(2)/2) AND full_quarter * p = point(0, 0, 1)") {
+			CHECK_THAT(half_quarter * p, isEqualTo(Tuple::point(0, sqrt(2) / 2, sqrt(2) / 2)));
+			CHECK_THAT(full_quarter * p, isEqualTo(Tuple::point(0, 0, 1)));
+		}
+	}
+}
+
+SCENARIO("The inverse of an x-rotation rotates in the opposite direction") {
+	GIVEN("p <- point(0, 1, 0) AND half_quarter <- rotation_x(pi / 4) AND inv <- inverse(half_quarter)") {
+		Tuple p = Tuple::point(0, 1, 0);
+		Matrix half_quarter = Matrix::rotationX(M_PI / 4);
+		Matrix inv = Matrix::invert(half_quarter);
+
+		THEN("inv * p = point(0, sqrt(2)/2, -sqrt(2)/2)") {
+			CHECK_THAT(inv * p, isEqualTo(Tuple::point(0, sqrt(2) / 2, -sqrt(2) / 2)));
+		}
+	}
+}
+
+SCENARIO("Rotating a point around the y axis") {
+	GIVEN("p <- point(0, 0, 1) AND half_quarter <- rotation_y(pi / 4) AND full_quarter <- rotation_y(pi / 2)") {
+		Tuple p = Tuple::point(0, 0, 1);
+		Matrix half_quarter = Matrix::rotationY(M_PI / 4);
+		Matrix full_quarter = Matrix::rotationY(M_PI / 2);
+
+		THEN("half_quarter * p = point(sqrt(2)/2, 0, sqrt(2)/2) AND full_quarter * p = point(1, 0, 0)") {
+			CHECK_THAT(half_quarter * p, isEqualTo(Tuple::point(sqrt(2) / 2, 0, sqrt(2) / 2)));
+			CHECK_THAT(full_quarter * p, isEqualTo(Tuple::point(1, 0, 0)));
+		}
+	}
+}
+
+SCENARIO("Rotating a point around the z axis") {
+	GIVEN("p <- point(0, 1, 0) AND half_quarter <- rotation_z(pi / 4) AND full_quarter <- rotation_z(pi / 2)") {
+		Tuple p = Tuple::point(0, 1, 0);
+		Matrix half_quarter = Matrix::rotationZ(M_PI / 4);
+		Matrix full_quarter = Matrix::rotationZ(M_PI / 2);
+
+		THEN("half_quarter * p = point(-sqrt(2)/2, sqrt(2)/2, 0) AND full_quarter * p = point(-1, 0, 0)") {
+			CHECK_THAT(half_quarter * p, isEqualTo(Tuple::point(-sqrt(2) / 2, sqrt(2) / 2, 0)));
+			CHECK_THAT(full_quarter * p, isEqualTo(Tuple::point(-1, 0, 0)));
+		}
+	}
+}
+
+SCENARIO("A shearing transformation moves x in proportion to y") {
+	GIVEN("transform <- shearing(1, 0, 0, 0, 0, 0) AND p <- point(2, 3, 4)") {
+		Matrix transform = Matrix::shearing(1, 0, 0, 0, 0, 0);
+		Tuple p = Tuple::point(2, 3, 4);
+
+		THEN("transform * p = point(5, 3, 4)") {
+			CHECK_THAT(transform * p, isEqualTo(Tuple::point(5, 3, 4)));
+		}
+	}
+}
+
+SCENARIO("A shearing transformation moves x in proportion to z") {
+	GIVEN("transform <- shearing(0, 1, 0, 0, 0, 0) AND p <- point(2, 3, 4)") {
+		Matrix transform = Matrix::shearing(0, 1, 0, 0, 0, 0);
+		Tuple p = Tuple::point(2, 3, 4);
+
+		THEN("transform * p = point(6, 3, 4)") {
+			CHECK_THAT(transform * p, isEqualTo(Tuple::point(6, 3, 4)));
+		}
+	}
+}
+
+SCENARIO("A shearing transformation moves y in proportion to x") {
+	GIVEN("transform <- shearing(0, 0, 1, 0, 0, 0) AND p <- point(2, 3, 4)") {
+		Matrix transform = Matrix::shearing(0, 0, 1, 0, 0, 0);
+		Tuple p = Tuple::point(2, 3, 4);
+
+		THEN("transform * p = point(2, 5, 4)") {
+			CHECK_THAT(transform * p, isEqualTo(Tuple::point(2, 5, 4)));
+		}
+	}
+}
+
+SCENARIO("A shearing transformation moves y in proportion to z") {
+	GIVEN("transform <- shearing(0, 0, 0, 1, 0, 0) AND p <- point(2, 3, 4)") {
+		Matrix transform = Matrix::shearing(0, 0, 0, 1, 0, 0);
+		Tuple p = Tuple::point(2, 3, 4);
+
+		THEN("transform * p = point(2, 7, 4)") {
+			CHECK_THAT(transform * p, isEqualTo(Tuple::point(2, 7, 4)));
+		}
+	}
+}
+
+SCENARIO("A shearing transformation moves z in proportion to x") {
+	GIVEN("transform <- shearing(0, 0, 0, 0, 1, 0) AND p <- point(2, 3, 4)") {
+		Matrix transform = Matrix::shearing(0, 0, 0, 0, 1, 0);
+		Tuple p = Tuple::point(2, 3, 4);
+
+		THEN("transform * p = point(2, 3, 6)") {
+			CHECK_THAT(transform * p, isEqualTo(Tuple::point(2, 3, 6)));
+		}
+	}
+}
+
+SCENARIO("A shearing transformation moves z in proportion to y") {
+	GIVEN("transform <- shearing(0, 0, 0, 0, 0, 1) AND p <- point(2, 3, 4)") {
+		Matrix transform = Matrix::shearing(0, 0, 0, 0, 0, 1);
+		Tuple p = Tuple::point(2, 3, 4);
+
+		THEN("transform * p = point(2, 3, 7)") {
+			CHECK_THAT(transform * p, isEqualTo(Tuple::point(2, 3, 7)));
+		}
+	}
+}
+
+SCENARIO("Individual transformations are applied in sequence") {
+	GIVEN("p <- point(1, 0, 1) AND A <- rotation_x(pi / 2) AND B <- scaling(5, 5, 5) AND C <- translation(10, 5, 7)") {
+		Tuple p = Tuple::point(1, 0, 1);
+		Matrix A = Matrix::rotationX(M_PI / 2);
+		Matrix B = Matrix::scaling(5, 5, 5);
+		Matrix C = Matrix::translation(10, 5, 7);
+
+		THEN("p2 = A * p = point(1, -1, 0) AND p3 = B * p2 = point(5, -5, 0) AND p4 = C * p3 = point(15, 0, 7)") {
+			Tuple p2 = A * p;
+			Tuple p3 = B * p2;
+			Tuple p4 = C * p3;
+
+			CHECK_THAT(p2, isEqualTo(Tuple::point(1, -1, 0)));
+			CHECK_THAT(p3, isEqualTo(Tuple::point(5, -5, 0)));
+			CHECK_THAT(p4, isEqualTo(Tuple::point(15, 0, 7)));
+		}
+	}
+}
+
+SCENARIO("Chained transformations must be applied in reverse order") {
+	GIVEN("p <- point(1, 0, 1) AND A <- rotation_x(pi / 2) AND B <- scaling(5, 5, 5) AND C <- translation(10, 5, 7)") {
+		Tuple p = Tuple::point(1, 0, 1);
+		Matrix A = Matrix::rotationX(M_PI / 2);
+		Matrix B = Matrix::scaling(5, 5, 5);
+		Matrix C = Matrix::translation(10, 5, 7);
+
+		THEN("T = C * B * A = point(15, 0, 7)") {
+			Matrix T = C * B * A;
+
+			CHECK_THAT(T * p, isEqualTo(Tuple::point(15, 0, 7)));
+		}
+	}
+}

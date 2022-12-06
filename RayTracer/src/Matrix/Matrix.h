@@ -14,6 +14,91 @@ public:
 		m_data = std::make_shared<float[]>(w * h);
 	}
 
+	static Matrix translation(float x, float y, float z) {
+		Matrix translationMatrix{ 4, 4 };
+
+		float matrixContent[] = {
+			1.0f, 0.0f, 0.0f, x,
+			0.0f, 1.0f, 0.0f, y,
+			0.0f, 0.0f, 1.0f, z,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
+
+		translationMatrix.setData(matrixContent);
+		return translationMatrix;
+	}
+
+	static Matrix scaling(float x, float y, float z) {
+		Matrix scalingMatrix{ 4, 4 };
+
+		float matrixContent[] = {
+			x, 0.0f, 0.0f, 0.0f,
+			0.0f, y, 0.0f, 0.0f,
+			0.0f, 0.0f, z, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
+
+		scalingMatrix.setData(matrixContent);
+		return scalingMatrix;
+	}
+
+	static Matrix rotationX(float r) {
+		Matrix rotationXMatrix{ 4, 4 };
+
+		float matrixContent[] = {
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, std::cos(r), -std::sin(r), 0.0f,
+			0.0f, std::sin(r), std::cos(r), 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
+
+		rotationXMatrix.setData(matrixContent);
+		return rotationXMatrix;
+	}
+
+	static Matrix rotationY(float r) {
+		Matrix rotationYMatrix{ 4, 4 };
+
+		float matrixContent[] = {
+			std::cos(r), 0.0f, std::sin(r), 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			-std::sin(r), 0.0f, std::cos(r), 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
+
+		rotationYMatrix.setData(matrixContent);
+		return rotationYMatrix;
+	}
+
+	static Matrix rotationZ(float r) {
+		Matrix rotationZMatrix{ 4, 4 };
+
+		float matrixContent[] = {
+			std::cos(r), -std::sin(r), 0.0f, 0.0f,
+			std::sin(r), std::cos(r), 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
+
+		rotationZMatrix.setData(matrixContent);
+		return rotationZMatrix;
+	}
+
+	static Matrix shearing(float xy, float xz, float yx, float yz, float zx, float zy) {
+		Matrix shearingMatrix{ 4, 4 };
+
+		float matrixContent[] = {
+			1.0f, xy, xz, 0.0f,
+			yx, 1.0f, yz, 0.0f,
+			zx, zy, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
+
+		shearingMatrix.setData(matrixContent);
+		return shearingMatrix;
+	}
+
+
 	static Matrix getFourByFourIdentity() {
 		Matrix identity{ 4, 4};
 
@@ -146,6 +231,17 @@ public:
 		return c;
 	}
 
+	Tuple operator *(const Tuple& b) const {
+		if (height != 4 || width != 4) return Tuple{ 0,0,0,0 };
+
+		float x = at(0, 0) * b.x + at(0, 1) * b.y + at(0, 2) * b.z + at(0, 3) * b.w;
+		float y = at(1, 0) * b.x + at(1, 1) * b.y + at(1, 2) * b.z + at(1, 3) * b.w;
+		float z = at(2, 0) * b.x + at(2, 1) * b.y + at(2, 2) * b.z + at(2, 3) * b.w;
+		float w = at(3, 0) * b.x + at(3, 1) * b.y + at(3, 2) * b.z + at(3, 3) * b.w;
+
+		return Tuple{ x, y, z, w };
+	}
+
 	bool operator ==(const Matrix& a) const {
 		if (width * height != a.width * a.height) return false;
 
@@ -157,6 +253,7 @@ public:
 
 		return true;
 	}
+
 
 	friend std::ostream& operator <<(std::ostream& os, const Matrix& a);
 };
